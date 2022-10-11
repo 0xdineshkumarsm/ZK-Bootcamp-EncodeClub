@@ -1,4 +1,4 @@
-// I AM NOT DONE
+
 
 // Perform and log output of simple arithmetic operations
 func simple_math() {
