@@ -16,5 +16,38 @@ from starkware.cairo.common.math import unsigned_div_rem
 func pattern{bitwise_ptr: BitwiseBuiltin*, range_check_ptr}(
     n: felt, idx: felt, exp: felt, broken_chain: felt
 ) -> (true: felt) {
-    return (0,);
+
+    alloc_locals;
+
+    %{
+        if ids.idx == 0:
+            print("================================================================================= ",ids.n) 
+    %}
+
+    // if (broken_chain == 1){
+    //     return(0,);
+    // }
+
+    if (exp == 0 ){
+        let (q,r) = unsigned_div_rem(n,2);
+        %{print("idx,exp,n,q,r",ids.idx,ids.exp,ids.n,ids.q,ids.r)%}
+        if(r == 0) {
+            let (res1) = pattern(q,idx+1,exp,broken_chain);
+            return (res1,);
+        }
+        let (res1) = pattern(q,idx+1,1,broken_chain);
+        return (res1,);
+    }
+
+    let (q,r) = unsigned_div_rem(n,4);
+    %{print("-------------------------------exp == 1 => idx,exp,n,q,r",ids.idx,ids.exp,ids.n,ids.q,ids.r)%}
+    if(n == 0 ){
+        return (1,);
+    }
+    if(r != 2 ){
+        return (0,);
+    }
+    let (res1) = pattern(q,idx+1,1,broken_chain);
+
+    return (res1,);
 }
